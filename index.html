@@ -1,191 +1,325 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Map (Oil and Gas Pipelines)</title>
-    <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
-        rel="stylesheet">
-</head>
-<body>
-    
-    <div id="map"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Interactive Map (Oil and Gas Pipelines)</title>
+        <link rel="icon" type="image/x-icon" href="icons/favicon.ico" />
+        <link rel="stylesheet" href="styles.css" />
+        <link
+            href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css"
+            rel="stylesheet"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="map"></div>
 
+        <div id="map-styles" class="hide">
+            <input
+                id="mapbox://styles/shirshodipto/clc35ntfr005114mp3i4fd3i7"
+                type="radio"
+                name="jtoggle"
+                value="Monochrome"
+                checked
+            />
+            <label for="mapbox://styles/shirshodipto/clc35ntfr005114mp3i4fd3i7"
+                >Monochrome</label
+            >
+            <input
+                id="mapbox://styles/shirshodipto/clcluk93l003z15oed6tkuwfo"
+                type="radio"
+                name="jtoggle"
+                value="Satellite"
+            />
+            <label for="mapbox://styles/shirshodipto/clcluk93l003z15oed6tkuwfo"
+                >Satellite</label
+            >
+        </div>
 
-    <div id="map-styles" class="hide">
-        <input id="mapbox://styles/shirshodipto/clc35ntfr005114mp3i4fd3i7" type="radio" name="jtoggle" value="Monochrome" checked>
-        <label for="mapbox://styles/shirshodipto/clc35ntfr005114mp3i4fd3i7">Monochrome</label>
-        <input id="mapbox://styles/shirshodipto/clcluk93l003z15oed6tkuwfo" type="radio" name="jtoggle" value="Satellite">
-        <label for="mapbox://styles/shirshodipto/clcluk93l003z15oed6tkuwfo">Satellite</label>
-    </div>
+        <nav id="main-layer-options" class="hide">
+            <a href="#" class="active" id="conflicted-zones">Conflict Zones</a>
+            <a href="#" class="active" id="oil-pipelines">Oil Pipelines</a>
+            <a href="#" class="active" id="gas-pipelines">Gas Pipelines</a>
+        </nav>
 
-    <nav id="main-layer-options" class="hide">
-        <a href="#" class="active" id="conflicted-zones">Conflict Zones</a>
-        <a href="#" class="active" id="oil-pipelines">Oil Pipelines</a>
-        <a href="#" class="active" id="gas-pipelines">Gas Pipelines</a>
-    </nav>
+        <!-- conflict zone details  -->
+        <div class="conflict-zones-detail hide" dataId="conflict-legend">
+            <div class="header">Years since conflict began</div>
+            <div class="labels">
+                <div class="start">5</div>
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+                <div class="circle5"></div>
+                <div class="end">70</div>
+            </div>
+        </div>
 
+        <!-- oil-pipelines details  -->
+        <div
+            class="labels-details hide"
+            id="oil-linestrings"
+            mainLayer="oil-pipelines"
+            dataId="oil-legend"
+        >
+            <div class="status">Oil Pipelines</div>
+            <div class="color-operating"><div></div></div>
+            <div class="name-operating">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-operating"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-operating">Operating</label>
+            </div>
+            <div class="color-retired"><div></div></div>
+            <div class="name-retired">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-retired"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-retired">Retired</label>
+            </div>
+            <div class="color-cancelled"><div></div></div>
+            <div class="name-cancelled">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-cancelled"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-cancelled">Cancelled</label>
+            </div>
+            <div class="color-construction"><div></div></div>
+            <div class="name-construction">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-construction"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-construction">Construction</label>
+            </div>
+            <div class="color-shelved"><div></div></div>
+            <div class="name-shelved">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-shelved"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-shelved">Shelved</label>
+            </div>
+            <div class="color-proposed"><div></div></div>
+            <div class="name-proposed">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-proposed"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-proposed">Proposed</label>
+            </div>
+            <div class="color-mothballed"><div></div></div>
+            <div class="name-mothballed">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-mothballed"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-mothballed">Mothballed</label>
+            </div>
+            <div class="color-idle"><div></div></div>
+            <div class="name-idle">
+                <input
+                    checked
+                    type="checkbox"
+                    id="oil-pipelines-idle"
+                    mainLayerId="oil-pipelines"
+                />
+                <label for="oil-pipelines-idle">Idle</label>
+            </div>
+        </div>
 
-    <!-- conflict zone details  -->
-    <div class="conflict-zones-detail hide" dataId="conflict-legend">
-        <div class="header">
-            Years since conflict began
+        <!-- gas-pipelines details  -->
+        <div
+            class="labels-details hide"
+            id="gas-linestrings"
+            mainLayer="gas-pipelines"
+            dataId="gas-legend"
+        >
+            <div class="status">Gas Pipelines</div>
+            <div class="color-operating"><div></div></div>
+            <div class="name-operating">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-operating"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-operating">Operating</label>
+            </div>
+            <div class="color-retired"><div></div></div>
+            <div class="name-retired">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-retired"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-retired">Retired</label>
+            </div>
+            <div class="color-cancelled"><div></div></div>
+            <div class="name-cancelled">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-cancelled"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-cancelled">Cancelled</label>
+            </div>
+            <div class="color-construction"><div></div></div>
+            <div class="name-construction">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-construction"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-construction">Construction</label>
+            </div>
+            <div class="color-shelved"><div></div></div>
+            <div class="name-shelved">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-shelved"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-shelved">Shelved</label>
+            </div>
+            <div class="color-proposed"><div></div></div>
+            <div class="name-proposed">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-proposed"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-proposed">Proposed</label>
+            </div>
+            <div class="color-mothballed"><div></div></div>
+            <div class="name-mothballed">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-mothballed"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-mothballed">Mothballed</label>
+            </div>
+            <div class="color-idle"><div></div></div>
+            <div class="name-idle">
+                <input
+                    checked
+                    type="checkbox"
+                    id="gas-pipelines-idle"
+                    mainLayerId="gas-pipelines"
+                />
+                <label for="gas-pipelines-idle">Idle</label>
+            </div>
         </div>
-        <div class="labels">
-            <div class="start">5</div>
-            <div class="circle1"></div>
-            <div class="circle2"></div>
-            <div class="circle3"></div>
-            <div class="circle4"></div>
-            <div class="circle5"></div>
-            <div class="end">70</div>
-        </div>
-    </div>
 
-    <!-- oil-pipelines details  -->
-    <div class="labels-details hide" id="oil-linestrings" mainLayer="oil-pipelines" dataId="oil-legend">
-        <div class="status">Oil Pipelines</div>
-        <div class="color-operating"><div></div></div>
-        <div class="name-operating">
-            <input checked type="checkbox" id="oil-pipelines-operating" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-operating">Operating</label>
+        <!-- gas pipelines summary  -->
+        <div
+            class="pipelines-summary hide"
+            id="gas-pipelines-summary"
+            dataId="gas-legend"
+        >
+            <div class="total">Total Projects: 3767</div>
+            <div class="table">
+                <div>LNG Terminals (Imports):</div>
+                <div class="value">601</div>
+                <div>LNG Terminals (Exports):</div>
+                <div class="value">563</div>
+                <div>Gas Pipelines:</div>
+                <div class="value">2603</div>
+            </div>
         </div>
-        <div class="color-retired"><div></div></div>
-        <div class="name-retired">
-            <input checked type="checkbox" id="oil-pipelines-retired" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-retired">Retired</label>
-        </div>
-        <div class="color-cancelled"><div></div></div>
-        <div class="name-cancelled">
-            <input checked type="checkbox" id="oil-pipelines-cancelled" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-cancelled">Cancelled</label>
-        </div>
-        <div class="color-construction"><div></div></div>
-        <div class="name-construction">
-            <input checked type="checkbox" id="oil-pipelines-construction" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-construction">Construction</label>
-        </div>
-        <div class="color-shelved"><div></div></div>
-        <div class="name-shelved">
-            <input checked type="checkbox" id="oil-pipelines-shelved" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-shelved">Shelved</label>
-        </div>
-        <div class="color-proposed"><div></div></div>
-        <div class="name-proposed">
-            <input checked type="checkbox" id="oil-pipelines-proposed" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-proposed">Proposed</label>
-        </div>
-        <div class="color-mothballed"><div></div></div>
-        <div class="name-mothballed">
-            <input checked type="checkbox" id="oil-pipelines-mothballed" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-mothballed">Mothballed</label>
-        </div>
-        <div class="color-idle"><div></div></div>
-        <div class="name-idle">
-            <input checked type="checkbox" id="oil-pipelines-idle" mainLayerId="oil-pipelines">
-            <label for="oil-pipelines-idle">Idle</label>
-        </div>
-    </div>
 
+        <!-- oil pipelines summary  -->
+        <div
+            class="pipelines-summary hide"
+            id="oil-pipelines-summary"
+            dataId="oil-legend"
+        >
+            <div class="total">Total Oil Pipelines: 782</div>
+            <div class="table">
+                <div>Operating:</div>
+                <div class="value">612</div>
+                <div>Construction:</div>
+                <div class="value">29</div>
+                <div>Proposed:</div>
+                <div class="value">40</div>
+                <div>Cancelled:</div>
+                <div class="value">67</div>
+                <div>Shelved:</div>
+                <div class="value">11</div>
+                <div>Retired:</div>
+                <div class="value">17</div>
+                <div>Mothballed:</div>
+                <div class="value">4</div>
+                <div>Idle:</div>
+                <div class="value">2</div>
+            </div>
+        </div>
 
-    <!-- gas-pipelines details  -->
-    <div class="labels-details hide" id="gas-linestrings" mainLayer="gas-pipelines" dataId="gas-legend">
-        <div class="status">Gas Pipelines</div>
-        <div class="color-operating"><div></div></div>
-        <div class="name-operating">
-            <input checked type="checkbox" id="gas-pipelines-operating" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-operating">Operating</label>
+        <div id="show-legends" class="hide">
+            <div class="legend-header">Show Legends & Additional Options</div>
+            <div class="legends-inputs">
+                <input
+                    id="conflict-legend"
+                    type="radio"
+                    name="rtoggle"
+                    value="conflict"
+                    checked
+                />
+                <label for="conflict-legend">Conflicted Zones</label>
+                <input id="oil-legend" type="radio" name="rtoggle" value="oil" />
+                <label for="oil-legend">Oil Pipelines</label>
+                <input id="gas-legend" type="radio" name="rtoggle" value="gas" />
+                <label for="gas-legend">Gas Pipelines</label>
+            </div>
         </div>
-        <div class="color-retired"><div></div></div>
-        <div class="name-retired">
-            <input checked type="checkbox" id="gas-pipelines-retired" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-retired">Retired</label>
-        </div>
-        <div class="color-cancelled"><div></div></div>
-        <div class="name-cancelled">
-            <input checked type="checkbox" id="gas-pipelines-cancelled" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-cancelled">Cancelled</label>
-        </div>
-        <div class="color-construction"><div></div></div>
-        <div class="name-construction">
-            <input checked type="checkbox" id="gas-pipelines-construction" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-construction">Construction</label>
-        </div>
-        <div class="color-shelved"><div></div></div>
-        <div class="name-shelved">
-            <input checked type="checkbox" id="gas-pipelines-shelved" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-shelved">Shelved</label>
-        </div>
-        <div class="color-proposed"><div></div></div>
-        <div class="name-proposed">
-            <input checked type="checkbox" id="gas-pipelines-proposed" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-proposed">Proposed</label>
-        </div>
-        <div class="color-mothballed"><div></div></div>
-        <div class="name-mothballed">
-            <input checked type="checkbox" id="gas-pipelines-mothballed" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-mothballed">Mothballed</label>
-        </div>
-        <div class="color-idle"><div></div></div>
-        <div class="name-idle">
-            <input checked type="checkbox" id="gas-pipelines-idle" mainLayerId="gas-pipelines">
-            <label for="gas-pipelines-idle">Idle</label>
-        </div>
-    </div>
 
-
-    <!-- gas pipelines summary  -->
-    <div class="pipelines-summary hide" id="gas-pipelines-summary" dataId="gas-legend">
-        <div class="total">Total Projects: 3767</div>
-        <div class="table">
-            <div>LNG Terminals (Imports): </div><div class="value">601</div>
-            <div>LNG Terminals (Exports): </div><div class="value">563</div>
-            <div>Gas Pipelines: </div><div class="value">2603</div>
+        <div class="copyright">
+            <p>Copyright &COPY; Shirsho Dipto</p>
+            <div class="credits">
+                <p>
+                    Data Sources:
+                    <a
+                        href="https://github.com/ShirshoDipto/ustadh-project"
+                        target="_blank"
+                        >Checkout Project Readme</a
+                    >
+                </p>
+            </div>
         </div>
-    </div>
 
-
-    <!-- oil pipelines summary  -->
-    <div class="pipelines-summary hide" id="oil-pipelines-summary" dataId="oil-legend">
-        <div class="total">Total Oil Pipelines: 782</div>
-        <div class="table">
-            <div>Operating: </div><div class="value">612</div>
-            <div>Construction: </div><div class="value">29</div>
-            <div>Proposed: </div><div class="value">40</div>
-            <div>Cancelled: </div><div class="value">67</div>
-            <div>Shelved: </div><div class="value">11</div>
-            <div>Retired: </div><div class="value">17</div>
-            <div>Mothballed: </div><div class="value">4</div>
-            <div>Idle: </div><div class="value">2</div>
-        </div>
-    </div>
-
-    <div id="show-legends" class="hide">
-        <div class="legend-header">Show Legends & Additional Options</div>
-        <div class="legends-inputs">
-            <input id="conflict-legend" type="radio" name="rtoggle" value="conflict" checked>
-            <label for="conflict-legend">Conflicted Zones</label>
-            <input id="oil-legend" type="radio" name="rtoggle" value="oil">
-            <label for="oil-legend">Oil Pipelines</label>
-            <input id="gas-legend" type="radio" name="rtoggle" value="gas">
-            <label for="gas-legend">Gas Pipelines</label>
-        </div>
-    </div>
-
-    <div class="copyright">
-        <p>Copyright &COPY; Shirsho Dipto></p>
-        <div class="credits"><p>Data Sources: <a href="https://github.com/ShirshoDipto/ustadh-project" target="_blank">Checkout Project Readme</a></p></div>
-    </div>
-
-        
-    <img class="loading" src="icons/loading2.gif" alt="loading gif">
-</body>
-<script src="main.js"></script>
+        <img class="loading" src="icons/loading2.gif" alt="loading gif" />
+    </body>
+    <script src="main.js"></script>
 </html>
