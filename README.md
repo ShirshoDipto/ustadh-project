@@ -2,7 +2,7 @@
 
 This app utilizes Mapbox to provide an interactive and intuitive data visualization map focused on conflict zones and energy supplies around the world. The goal of this app is to assist in understanding and analyzing various global policies by presenting conflict zones, oil pipelines, and gas pipelines around the world in a visually engaging format.
 
-[View Live](https://shirshodipto.github.io/ustadh-project)
+<!-- [View Live](https://shirshodipto.github.io/ustadh-project) -->
 
 ![](./dist/gifs/interactiveMap3.webp)
 
